@@ -32,11 +32,14 @@ int main() {
     cudaMemcpy(dev_b, b, N*sizeof(int), cudaMemcpyHostToDevice);
 
     // Squeeze the function to time by invoke API
-    // cudaEventRecord twice
+    // cudaEventRecord twice.
+    // Kernel call is asynchronized to host code.
     cudaEventRecord(start);
     add<<<N, 1>>>(dev_a, dev_b, dev_c, N);
     cudaEventRecord(stop);
 
+    // Need to block CPU execution until 'stop' is record, which
+    // means the execution on GPU is completed.
     cudaMemcpy(c, dev_c, N*sizeof(int), cudaMemcpyDeviceToHost);
     cudaEventSynchronize(stop);
 
