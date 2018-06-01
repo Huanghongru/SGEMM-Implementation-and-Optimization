@@ -1,8 +1,9 @@
 #include <iostream>
 #include <cstdlib>
+#include <random>
 
 template <typename T>
-T** random_fill_matrix(int row, int col, int min=0, int max=100) {
+T** random_fill_matrix(int row, int col, T min=0, T max=100) {
     /* A function to quickly generate a matrix in some range [min, max]
      * Parameters:
      *   row: number of rows of matrix
@@ -16,9 +17,12 @@ T** random_fill_matrix(int row, int col, int min=0, int max=100) {
         mat[i] = new T[col];
     }
 
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_real_distribution<T> unif(min, max);
     for (int i = 0; i < row; ++i) {
         for (int j = 0; j < col; ++j) {
-            mat[i][j] = std::rand() % (max-min+1) + min;
+	    mat[i][j] = unif(mt);
         }
     }
     return mat;
