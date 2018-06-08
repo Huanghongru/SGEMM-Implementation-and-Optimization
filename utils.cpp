@@ -78,12 +78,20 @@ void print_mat(T** mat, int row, int col) {
 
 template <typename T>
 void check_sum(T* a, T* b, T* c, int row, int col) {
+    bool flag = true;
     for (int i = 0; i < row; ++i) {
         for (int j = 0; j < col; ++j) {
+	    if (a[i*row+j]+b[i*row+j] != c[i*row+j]) {
+		flag = 0;
+		std::cout << "Wrong Answer!!!" << std::endl;
+		break;
+	    }
+	    
             std::cout << a[i*row+j] << " + " << b[i*row+j]
 		    << " = " << c[i*row+j] << " "
 		    << bool(a[i*row+j]+b[i*row+j]==c[i*row+j]) << std::endl;
 	}
+	if (!flag) break;
     }
 }
     
