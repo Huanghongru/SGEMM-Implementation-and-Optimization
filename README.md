@@ -39,4 +39,11 @@ Max thread dimensions:  (1024, 1024, 64)
 
 Max grid dimensions: (2147483647, 65535, 65535)
 
+## Miscellaneous
+
+compile the file as follows:
+
+```
+nvcc *.cu --std=c++11
+```
 
