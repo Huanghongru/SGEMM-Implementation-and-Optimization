@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <random>
+#include <cmath>
 
 template <typename T>
 T** random_fill_matrix(int row, int col, T min=0, T max=100) {
@@ -94,9 +95,32 @@ void check_sum(T* a, T* b, T* c, int row, int col) {
 	if (!flag) break;
     }
 }
-    
 
-void hello() {
-    std::cout << "hello" << std::endl;
+template <typename T>
+bool check_mul(T* a, T* b, T* c, int M, int K, int N) {
+    /* Check if the result of matrix multiplication is right.*/
+    for (int i = 0; i < M; ++i) {
+	for (int j = 0; j < N; ++j) {
+	    T value = 0;
+	    for (int k = 0; k < K; ++k) {
+		value += a[i*M+k]*b[k*K+j];
+            }
+	    if (fabs(value-c[i*M+j])>1e-5) {
+		std::cout << c[i*M+j] << " " << value << std::endl;
+		return false;
+	    }
+        }
+    }
+    return true;
 }
+/*
+int main() {
+    int a[4] = {1, 2, 3, 4};
+    int b[4] = {1, 2, 3, 4};
+    int c[4] = {6, 10, 15, 22};
+    std::cout << check_mul<int>(a, b, c, 2, 2, 2) << std::endl;
+    std::cout << fabs(-1.34) << std::endl;
+    return 0;
+}*/
+
 
