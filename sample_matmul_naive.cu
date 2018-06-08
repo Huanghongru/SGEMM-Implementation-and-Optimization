@@ -1,8 +1,8 @@
 #include "utils.cpp"
 
-const int M = 1000;
-const int K = 1000;
-const int N = 1000;
+const int M = 1024;
+const int K = 1024;
+const int N = 1024;
 dim3 blocksPerGrid(4, 4);
 dim3 threadsPerBlock(16, 16);
 
@@ -12,7 +12,12 @@ __global__ void matmul_naive(T* a, T* b, T* c, int M, int K, int N) {
      * a: MxK
      * b: KxN
      * c: MxN
+     * 
+     * Average Time: 1000x1000x1000, 4.85s
+     * Average Time: 1024x1024x1024, 1.53s 
      */
+    // If the whole threads can't cover the matrix elements,
+    // the outside loop is required.
     int x = threadIdx.x + blockIdx.x*blockDim.x;
     int y = threadIdx.y + blockIdx.y*blockDim.y;
 
