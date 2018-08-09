@@ -9,16 +9,16 @@ Name:  GeForce GTX 1080 Ti
 
 Compute capability:  6.1
 
-Clock rate:  1683000
+Clock rate:  1.68GHz
 
 Device copy overlap: Enabled
 
 Kernel execution timeout:  Disabled
 
     --- Memory Information for device 0 ---
-Total global mem:   11720130560
+Total global mem:   10.91G
 
-Total constant mem:    65536
+Total constant mem:    64KB
 
 Max mem pitch:    2147483647
 
@@ -27,9 +27,9 @@ Texture Alignment:    512
     --- MP Information for device 0 ---
 Multiprocessor count:    28
 
-Shared mem per mp:    49152
+Shared mem per blcok:    48KB
 
-Registers per mp:    65536
+Registers per blcok:    65536
 
 Threads in warp:    32
 
