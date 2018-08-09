@@ -1,4 +1,4 @@
-#include "utils.cpp"
+#include "../utils.cpp"
 
 const int M = 1024;
 const int K = 1024;
