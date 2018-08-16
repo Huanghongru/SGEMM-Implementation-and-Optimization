@@ -14,13 +14,16 @@ __global__ void matmul_naive(T* a, T* b, T* c, int M, int K, int N) {
      */
     // If the whole threads can't cover the matrix elements,
     // the outside loop is required.
+    // Here I only consider the case that the size of the matrix
+    // is multiple of block size.
     int x = threadIdx.x + blockIdx.x*blockDim.x;
     int y = threadIdx.y + blockIdx.y*blockDim.y;
 
     for (int i = x; i < M; i += blockDim.x) {
 	for (int j = y; j < N; j += blockDim.y) {
 	    c[i*M+j] = 0;
-	    // A for loop in one GPU unit seems stupid..
+	    // A for loop in one thread caculates the 
+	    // one value in output matrix.
 	    for (int k = 0; k < K; ++k) {
 		c[i*M+j] += a[i*M+k]*b[k*K+j];
 	    }
