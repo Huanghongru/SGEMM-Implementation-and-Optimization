@@ -1,8 +1,6 @@
 #include "utils.cpp"
 
-const int TILE_SIZE = 32;
-dim3 blocksPerGrid(32, 32);
-dim3 threadsPerBlock(TILE_SIZE, TILE_SIZE);
+const int TILE_SIZE = 16;
 
 template <typename T>
 __global__ void matmul_share(T* a, T* b, T* c, int M, int K, int N) {
@@ -54,6 +52,12 @@ __global__ void matmul_share(T* a, T* b, T* c, int M, int K, int N) {
 
 int main(int argc, char *argv[]) {
     int M = std::atoi(argv[1]), K = std::atoi(argv[2]), N = std::atoi(argv[3]);
+    dim3 threadsPerBlock(TILE_SIZE, TILE_SIZE);
+    dim3 blocksPerGrid;
+    blocksPerGrid.x = M / threadsPerBlock.x;
+    blocksPerGrid.y = N / threadsPerBlock.y;
+    blocksPerGrid.z = 1;
+
     double* a = random_matrix_gpu<double>(M, K);
     double* b = random_matrix_gpu<double>(K, N);
     double* c = new double[M*N];

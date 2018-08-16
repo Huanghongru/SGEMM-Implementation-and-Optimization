@@ -1,6 +1,5 @@
 #include "utils.cpp"
 
-dim3 blocksPerGrid(4, 4);
 dim3 threadsPerBlock(16, 16);
 
 template <typename T>
@@ -31,7 +30,11 @@ __global__ void matmul_naive(T* a, T* b, T* c, int M, int K, int N) {
 
 int main(int argc, char *argv[]) {
     int M = std::atoi(argv[1]), K = std::atoi(argv[2]), N = std::atoi(argv[3]);
-    std::cout << M << " " << K << " " << N << std::endl;
+    dim3 blocksPerGrid;
+    blocksPerGrid.x = M / threadsPerBlock.x;
+    blocksPerGrid.y = N / threadsPerBlock.y;
+    blocksPerGrid.z = 1;
+
     double* a = random_matrix_gpu<double>(M, K);
     double* b = random_matrix_gpu<double>(K, N);
     double* c = new double[M*N];
