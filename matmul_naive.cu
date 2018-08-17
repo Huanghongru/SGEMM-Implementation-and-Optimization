@@ -38,8 +38,8 @@ int main(int argc, char *argv[]) {
     blocksPerGrid.y = N / threadsPerBlock.y;
     blocksPerGrid.z = 1;
 
-    double* a = random_matrix_gpu<double>(M, K);
-    double* b = random_matrix_gpu<double>(K, N);
+    double* a = utils::random_matrix_gpu<double>(M, K, utils::C_ORDER);
+    double* b = utils::random_matrix_gpu<double>(K, N, utils::C_ORDER);
     double* c = new double[M*N];
     double *dev_a, *dev_b, *dev_c;
 
@@ -52,8 +52,15 @@ int main(int argc, char *argv[]) {
     matmul_naive<double><<<blocksPerGrid, threadsPerBlock>>>(dev_a, dev_b, dev_c, M, K, N);
     cudaMemcpy(c, dev_c, M*N*sizeof(double), cudaMemcpyDeviceToHost);
 
-    std::cout << (check_mul<double>(a, b, c, M, K, N) ? "Correct!!" : "Wrong Answer!") << std::endl;
+    std::cout << (utils::check_mul<double>(a, b, c, M, K, N, utils::C_ORDER)
+		    ? "Correct!!" : "Wrong Answer!") << std::endl;
 
+    cudaFree(dev_a);
+    cudaFree(dev_b);
+    cudaFree(dev_c);
+    free(a);
+    free(b);
+    free(c);
     return 0;
 }
 

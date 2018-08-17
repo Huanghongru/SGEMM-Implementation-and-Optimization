@@ -58,8 +58,8 @@ int main(int argc, char *argv[]) {
     blocksPerGrid.y = N / threadsPerBlock.y;
     blocksPerGrid.z = 1;
 
-    double* a = random_matrix_gpu<double>(M, K);
-    double* b = random_matrix_gpu<double>(K, N);
+    double* a = utils::random_matrix_gpu<double>(M, K, utils::C_ORDER);
+    double* b = utils::random_matrix_gpu<double>(K, N, utils::C_ORDER);
     double* c = new double[M*N];
     double *dev_a, *dev_b, *dev_c;
 
@@ -72,8 +72,16 @@ int main(int argc, char *argv[]) {
     matmul_share<double><<<blocksPerGrid, threadsPerBlock>>>(dev_a, dev_b, dev_c, M, K, N);
     cudaMemcpy(c, dev_c, M*N*sizeof(double), cudaMemcpyDeviceToHost);
 
-    std::cout << (check_mul<double>(a, b, c, M, K, N) ? "Correct!!" : "Wrong Answer!") << std::endl;
-
+    std::cout << (utils::check_mul<double>(a, b, c, M, K, N, utils::C_ORDER) 
+		    ? "Correct!!" : "Wrong Answer!") << std::endl;
+#ifdef DEBUG
+    std::cout << "Matrix A:" << std::endl;
+    utils::print_mat_gpu(a, M, K, utils::C_ORDER);
+    std::cout << "Matrix B:" << std::endl;
+    utils::print_mat_gpu(b, K, N, utils::C_ORDER);
+    std::cout << "Matrix C:" << std::endl;
+    utils::print_mat_gpu(c, M, N, utils::C_ORDER);
+#endif
     return 0;
 }
 
