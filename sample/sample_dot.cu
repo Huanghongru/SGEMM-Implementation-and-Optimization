@@ -1,5 +1,4 @@
-#include "utils.cpp"
-#include "blas.cu"
+#include "../utils.cpp"
 #include <stdio.h>
 
 const int N = 1000;
