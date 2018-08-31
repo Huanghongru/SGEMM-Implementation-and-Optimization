@@ -98,22 +98,29 @@ void print_mat(T** mat, int row, int col) {
 }
 
 template <typename T>
-void check_sum(T* a, T* b, T* c, int row, int col) {
-    bool flag = true;
+bool check_sum(T* a, T* b, T* c, int row, int col, int order_type) {
+	if (order_type == C_ORDER) {
     for (int i = 0; i < row; ++i) {
         for (int j = 0; j < col; ++j) {
-	    if (a[i*row+j]+b[i*row+j] != c[i*row+j]) {
-		flag = 0;
-		std::cout << "Wrong Answer!!!" << std::endl;
-		break;
-	    }
-	    
-            std::cout << a[i*row+j] << " + " << b[i*row+j]
-		    << " = " << c[i*row+j] << " "
-		    << bool(a[i*row+j]+b[i*row+j]==c[i*row+j]) << std::endl;
-	}
-	if (!flag) break;
+	    	if (a[i*row+j]+b[i*row+j] != c[i*row+j]) {
+				std::cout << a[i*row+j] << " " << b[i*row+j] << " "
+				 << c[i*row+j] << std::endl;
+				return false;
+	    	}
+		}
     }
+    } else {
+        for (int i = 0; i < row; ++i) {
+            for (int j = 0; j < col; ++j) {
+        		if (a[i+j*row]+b[i+j*row] != c[i+j*row]) {
+					std::cout << a[i+j*row] << " " << b[i+j*row] << " "
+					 << c[i+j*row] << std::endl;
+					return false;
+				}
+			}
+		}
+	}
+	return true;
 }
 
 template <typename T>
