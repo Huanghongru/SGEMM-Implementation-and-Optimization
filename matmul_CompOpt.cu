@@ -7,7 +7,7 @@
 //   Asub: TILE_SIZE * TILE_SIZE 
 //   Bsub: TILE_SIZE * (TILE_SIZE*VECTOR_SIZE)
 const int TILE_SIZE = 16;
-const int VECTOR_SIZE = 4;
+const int VECTOR_SIZE = 8;
 
 template <typename T>
 __global__ void matmul_CompOpt(T *A, T *B, T *C, int M, int K, int N) {
@@ -36,8 +36,9 @@ __global__ void matmul_CompOpt(T *A, T *B, T *C, int M, int K, int N) {
 
 	for (int a = aBegin, b = bBegin; a <= aEnd; a += aStep, b += bStep) {
 		// Load Asub with size of TILE*TILE in colomn-major style.
-		int t = TILE_SIZE / VECTOR_SIZE;
-		for (int i = 0; i < t; ++i) {
+		// Each thread needs to load TILE_SIZE / VECTOR_SIZE values of A.
+		int t = VECTOR_SIZE;
+		for (int i = 0; i < TILE_SIZE / VECTOR_SIZE; ++i) {
 			As[ (i*t+ty) + TILE_SIZE * tx] = A[a + K*(i*t+ty) + tx];
 		}
 		__syncthreads();
