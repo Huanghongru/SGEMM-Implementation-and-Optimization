@@ -7,7 +7,7 @@
 //   Asub: TILE_SIZE * TILE_SIZE 
 //   Bsub: TILE_SIZE * (TILE_SIZE*VECTOR_SIZE)
 const int TILE_SIZE = 16;
-const int VECTOR_SIZE = 8;
+const int VECTOR_SIZE = 4;
 
 template <typename T>
 __global__ void matmul_CompOpt(T *A, T *B, T *C, int M, int K, int N) {
@@ -22,7 +22,7 @@ __global__ void matmul_CompOpt(T *A, T *B, T *C, int M, int K, int N) {
 	// to store TILE*TILE submatrix of A.
 	__shared__ T As[TILE_SIZE * TILE_SIZE];
 
-	// Allocate register files at each thread.
+	// Allocate register files for sub-result of C at each thread.
 	T cv[TILE_SIZE] = {0};
 
 	// Basic iterations is similar with Tiling. But notice that 
