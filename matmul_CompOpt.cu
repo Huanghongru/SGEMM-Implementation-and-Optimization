@@ -92,9 +92,9 @@ int main(int argc, char *argv[]) {
 	matmul_CompOpt<double><<<grid, threads>>>(dev_a, dev_b, dev_c, M, K, N);
 
 	cudaMemcpy(c, dev_c, M*N*sizeof(double), cudaMemcpyDeviceToHost);
-
+#ifdef CHECK
 	std::cout << (utils::check_mul<double>(a, b, c, M, K, N, utils::C_ORDER) ? "Correct!!" : "Wrong Answer!") << std::endl;
-
+#endif
 #ifdef DEBUG
     std::cout << "Matrix A:" << std::endl;
     utils::print_mat_gpu(a, M, K, utils::C_ORDER);

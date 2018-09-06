@@ -1,6 +1,6 @@
 #include "utils.cpp"
 
-dim3 threadsPerBlock(16, 16);
+const int TILE_SIZE = 16;
 
 template <typename T>
 __global__ void matmul_naive(T* a, T* b, T* c, int M, int K, int N) {
@@ -27,10 +27,8 @@ __global__ void matmul_naive(T* a, T* b, T* c, int M, int K, int N) {
 
 int main(int argc, char *argv[]) {
     int M = std::atoi(argv[1]), K = std::atoi(argv[2]), N = std::atoi(argv[3]);
-    dim3 blocksPerGrid;
-    blocksPerGrid.x = M / threadsPerBlock.x;
-    blocksPerGrid.y = N / threadsPerBlock.y;
-    blocksPerGrid.z = 1;
+	dim3 threadsPerBlock(TILE_SIZE, TILE_SIZE);
+    dim3 blocksPerGrid(N / TILE_SIZE, M / TILE_SIZE);
 
     double* a = utils::random_matrix_gpu<double>(M, K, utils::C_ORDER);
     double* b = utils::random_matrix_gpu<double>(K, N, utils::C_ORDER);
@@ -46,9 +44,10 @@ int main(int argc, char *argv[]) {
     matmul_naive<double><<<blocksPerGrid, threadsPerBlock>>>(dev_a, dev_b, dev_c, M, K, N);
     cudaMemcpy(c, dev_c, M*N*sizeof(double), cudaMemcpyDeviceToHost);
 
+#ifdef CHECK
     std::cout << (utils::check_mul<double>(a, b, c, M, K, N, utils::C_ORDER)
 		    ? "Correct!!" : "Wrong Answer!") << std::endl;
-
+#endif
     cudaFree(dev_a);
     cudaFree(dev_b);
     cudaFree(dev_c);

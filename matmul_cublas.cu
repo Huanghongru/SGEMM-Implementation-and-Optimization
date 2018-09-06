@@ -24,9 +24,10 @@ int main(int argc, char *argv[]) {
 		    &al, dev_a, M, dev_b, K, &bet, dev_c, M);
 
     cudaMemcpy(c, dev_c, M*N*sizeof(double), cudaMemcpyDeviceToHost);
+#ifdef CHECK
     std::cout << (utils::check_mul<double>(a, b, c, M, K, N, utils::FORTRAN_ORDER) 
 		    ? "Correct!!" : "Wrong Answer!") << std::endl;
-
+#endif
 #ifdef DEBUG
     std::cout << "Matrix A:" << std::endl;
     utils::print_mat_gpu(a, M, K, utils::FORTRAN_ORDER);
