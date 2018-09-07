@@ -13,16 +13,16 @@ __global__ void matmul_naive(T* a, T* b, T* c, int M, int K, int N) {
     // the outside loop is required.
     // Here I only consider the case that the size of the matrix
     // is multiple of block size.
-    int j = threadIdx.x + blockIdx.x*blockDim.x;
     int i = threadIdx.y + blockIdx.y*blockDim.y;
+    int j = threadIdx.x + blockIdx.x*blockDim.x;
 
 	// A for loop in one thread caculates the 
 	// one value in output matrix.
 	T elem = 0;
 	for (int k = 0; k < K; ++k) {
-		elem = elem + a[i*M+k]*b[k*K+j];
+		elem = elem + a[i*K+k]*b[k*N+j];
 	}
-	c[i*M+j] = elem;
+	c[i*N+j] = elem;
 }
 
 int main(int argc, char *argv[]) {
