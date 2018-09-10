@@ -30,22 +30,22 @@ int main(int argc, char *argv[]) {
 	dim3 threadsPerBlock(TILE_SIZE, TILE_SIZE);
     dim3 blocksPerGrid(N / TILE_SIZE, M / TILE_SIZE);
 
-    double* a = utils::random_matrix_gpu<double>(M, K, utils::C_ORDER);
-    double* b = utils::random_matrix_gpu<double>(K, N, utils::C_ORDER);
-    double* c = new double[M*N];
-    double *dev_a, *dev_b, *dev_c;
+    float* a = utils::random_matrix_gpu<float>(M, K, utils::C_ORDER);
+    float* b = utils::random_matrix_gpu<float>(K, N, utils::C_ORDER);
+    float* c = new float[M*N];
+    float *dev_a, *dev_b, *dev_c;
 
-    cudaMalloc((void**)&dev_a, M*K*sizeof(double));
-    cudaMalloc((void**)&dev_b, K*N*sizeof(double));
-    cudaMalloc((void**)&dev_c, M*N*sizeof(double));
+    cudaMalloc((void**)&dev_a, M*K*sizeof(float));
+    cudaMalloc((void**)&dev_b, K*N*sizeof(float));
+    cudaMalloc((void**)&dev_c, M*N*sizeof(float));
 
-    cudaMemcpy(dev_a, a, M*K*sizeof(double), cudaMemcpyHostToDevice);
-    cudaMemcpy(dev_b, b, K*N*sizeof(double), cudaMemcpyHostToDevice);
-    matmul_naive<double><<<blocksPerGrid, threadsPerBlock>>>(dev_a, dev_b, dev_c, M, K, N);
-    cudaMemcpy(c, dev_c, M*N*sizeof(double), cudaMemcpyDeviceToHost);
+    cudaMemcpy(dev_a, a, M*K*sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_b, b, K*N*sizeof(float), cudaMemcpyHostToDevice);
+    matmul_naive<float><<<blocksPerGrid, threadsPerBlock>>>(dev_a, dev_b, dev_c, M, K, N);
+    cudaMemcpy(c, dev_c, M*N*sizeof(float), cudaMemcpyDeviceToHost);
 
 #ifdef CHECK
-    std::cout << (utils::check_mul<double>(a, b, c, M, K, N, utils::C_ORDER)
+    std::cout << (utils::check_mul<float>(a, b, c, M, K, N, utils::C_ORDER)
 		    ? "Correct!!" : "Wrong Answer!") << std::endl;
 #endif
     cudaFree(dev_a);

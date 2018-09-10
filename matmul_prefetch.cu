@@ -93,24 +93,24 @@ int main(int argc, char *argv[]) {
 	dim3 threads(TILE_SIZE, VECTOR_SIZE);
 	dim3 grid(N / (TILE_SIZE * VECTOR_SIZE), M / TILE_SIZE);
 
-	double *a = utils::random_matrix_gpu<double>(M, K, utils::C_ORDER);
-	double *b = utils::random_matrix_gpu<double>(K, N, utils::C_ORDER);
-	double *c = new double[M*N];
+	float *a = utils::random_matrix_gpu<float>(M, K, utils::C_ORDER);
+	float *b = utils::random_matrix_gpu<float>(K, N, utils::C_ORDER);
+	float *c = new float[M*N];
 
-	double *dev_a, *dev_b, *dev_c;
+	float *dev_a, *dev_b, *dev_c;
 
-	cudaMalloc((void**)&dev_a, M*K*sizeof(double));
-	cudaMalloc((void**)&dev_b, K*N*sizeof(double));
-	cudaMalloc((void**)&dev_c, M*N*sizeof(double));
+	cudaMalloc((void**)&dev_a, M*K*sizeof(float));
+	cudaMalloc((void**)&dev_b, K*N*sizeof(float));
+	cudaMalloc((void**)&dev_c, M*N*sizeof(float));
 
-	cudaMemcpy(dev_a, a, M*K*sizeof(double), cudaMemcpyHostToDevice);	
-	cudaMemcpy(dev_b, b, K*N*sizeof(double), cudaMemcpyHostToDevice);
+	cudaMemcpy(dev_a, a, M*K*sizeof(float), cudaMemcpyHostToDevice);	
+	cudaMemcpy(dev_b, b, K*N*sizeof(float), cudaMemcpyHostToDevice);
 	
-	matmul_Prefetch<double><<<grid, threads>>>(dev_a, dev_b, dev_c, M, K, N);
+	matmul_Prefetch<float><<<grid, threads>>>(dev_a, dev_b, dev_c, M, K, N);
 
-	cudaMemcpy(c, dev_c, M*N*sizeof(double), cudaMemcpyDeviceToHost);
+	cudaMemcpy(c, dev_c, M*N*sizeof(float), cudaMemcpyDeviceToHost);
 #ifdef CHECK
-	std::cout << (utils::check_mul<double>(a, b, c, M, K, N, utils::C_ORDER) ? "Correct!!" : "Wrong Answer!") << std::endl;
+	std::cout << (utils::check_mul<float>(a, b, c, M, K, N, utils::C_ORDER) ? "Correct!!" : "Wrong Answer!") << std::endl;
 #endif
 #ifdef DEBUG
     std::cout << "Matrix A:" << std::endl;

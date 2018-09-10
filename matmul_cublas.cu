@@ -4,28 +4,30 @@
 
 int main(int argc, char *argv[]) {
     int M = std::atoi(argv[1]), K = std::atoi(argv[2]), N = std::atoi(argv[3]);
-    double *a = utils::random_matrix_gpu<double>(M, K, utils::FORTRAN_ORDER);
-    double *b = utils::random_matrix_gpu<double>(K, N, utils::FORTRAN_ORDER);
-    double *c = new double[M*N];
+    float *a = utils::random_matrix_gpu<float>(M, K, utils::FORTRAN_ORDER);
+    float *b = utils::random_matrix_gpu<float>(K, N, utils::FORTRAN_ORDER);
+    float *c = new float[M*N];
 
-    double *dev_a, *dev_b, *dev_c;
+    float *dev_a, *dev_b, *dev_c;
 
-    cudaMalloc((void**)&dev_a, M*K*sizeof(double));
-    cudaMalloc((void**)&dev_b, K*N*sizeof(double));
-    cudaMalloc((void**)&dev_c, M*N*sizeof(double));
+    cudaMalloc((void**)&dev_a, M*K*sizeof(float));
+    cudaMalloc((void**)&dev_b, K*N*sizeof(float));
+    cudaMalloc((void**)&dev_c, M*N*sizeof(float));
 
-    cudaMemcpy(dev_a, a, M*K*sizeof(double), cudaMemcpyHostToDevice);
-    cudaMemcpy(dev_b, b, K*N*sizeof(double), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_a, a, M*K*sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_b, b, K*N*sizeof(float), cudaMemcpyHostToDevice);
     
     cublasHandle_t handle;
     cublasCreate(&handle);
-    double al=1.0f, bet=0;
-    cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, M, N, K, 
+    float al=1.0f, bet=0;
+    // cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, M, N, K, 
+	//	    &al, dev_a, M, dev_b, K, &bet, dev_c, M);
+    cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, M, N, K, 
 		    &al, dev_a, M, dev_b, K, &bet, dev_c, M);
 
-    cudaMemcpy(c, dev_c, M*N*sizeof(double), cudaMemcpyDeviceToHost);
+    cudaMemcpy(c, dev_c, M*N*sizeof(float), cudaMemcpyDeviceToHost);
 #ifdef CHECK
-    std::cout << (utils::check_mul<double>(a, b, c, M, K, N, utils::FORTRAN_ORDER) 
+    std::cout << (utils::check_mul<float>(a, b, c, M, K, N, utils::FORTRAN_ORDER) 
 		    ? "Correct!!" : "Wrong Answer!") << std::endl;
 #endif
 #ifdef DEBUG
