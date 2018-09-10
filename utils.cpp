@@ -57,13 +57,13 @@ T* random_matrix_gpu(int row, int col, int order_type, T min=-50, T max=50) {
     if (order_type == C_ORDER ) {
         for (int i = 0; i < row; ++i) {
 	    for (int j = 0; j < col; ++j) {
-	        mat[i*row+j] = unif(mt);
+	        mat[i*col+j] = unif(mt);
 	    }
         }
     } else {
         for (int i = 0; i < row; ++i) {
 	    for (int j = 0; j < col; ++j) {
-	        mat[i+j*row] = unif(mt);
+	        mat[i+j*col] = unif(mt);
 	    }
         }
     }
@@ -131,10 +131,10 @@ bool check_mul(T* a, T* b, T* c, int M, int K, int N, int order_type) {
 	    for (int j = 0; j < N; ++j) {
 		T value = 0;
 		for (int k = 0; k < K; ++k) {
-		    value += a[i*M+k]*b[k*K+j];
+		    value += a[i*K+k]*b[k*N+j];
 		}
-		if (fabs(value-c[i*M+j])>1e-5) {
-		    std::cout << c[i*M+j] << " " << value << std::endl;
+		if (fabs(value-c[i*N+j])>0.1) {
+		    std::cout << c[i*N+j] << " " << value << std::endl;
 		    return false;
 		}
 	    }
@@ -144,10 +144,10 @@ bool check_mul(T* a, T* b, T* c, int M, int K, int N, int order_type) {
             for (int j = 0; j < N; ++j) {
 		T value = 0;
 		for (int k = 0; k < K; ++k) {
-		    value += a[i+k*M]*b[k+j*K];
+		    value += a[i+k*K]*b[k+j*N];
 		}
-		if (fabs(value-c[i+j*M])>1e-5) {
-		    std::cout << c[i+j*M] << " " << value << std::endl;
+		if (fabs(value-c[i+j*N])>0.1) {
+		    std::cout << c[i+j*N] << " " << value << std::endl;
 		    return false;
 		}
 	    }
