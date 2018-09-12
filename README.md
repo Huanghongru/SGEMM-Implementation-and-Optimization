@@ -1,6 +1,6 @@
-# Implementation and Optimization of Matrix Multiplication on CUDA
+# SGEMM Implementation and Optimization on CUDA
 
-This is a summer intern project in Advanced Computer Architecture Lab, SJTU. I implemented matrix multiplication on CUDA-8.0 based on **five** different method. Some of the methods archieved almost the same performance as cuBLAS.
+This is a summer intern project in Advanced Computer Architecture Lab, SJTU. SGEMM means **floating point matrix multiplication**. I implemented matrix multiplication on CUDA-8.0 based on **five** different method. Some of the methods archieved almost the same performance as cuBLAS.
 
 ## Device Properties
 Name:  GeForce GTX 1080 Ti
@@ -14,7 +14,7 @@ The key idea for CUDA programming is properly assigning work to each threads. Th
 
 We use **GFLOPS** to measure the performance of different methods. In computing, **floating point operations per second(FLOPS)** is a measure of computer performance. It is also commonly used in researches about matrix multiplication on GPU. 
 
-Consider matrix multiplication: A(MxK) x B(KxN) = C(MxN). If the time spent on computing is ``t``, the **GFLOPS** is:
+Consider matrix multiplication: ``A(MxK)`` x ``B(KxN)`` = ``C(MxN)``. If the time spent on computing is ``t``, the **GFLOPS** is:
 
 ``2xMxKxN / t / 1e9``
 
@@ -24,6 +24,9 @@ In the experiment, I evaluate GFLOPS with different size of matrix.
 The perforamce of cuBLAS is as follows:
 ![](fig/cu.png)
 
+### Naive Method
+Each thread calculates one value of output matrix ``C``. This is quite simple and straight forward. Performance:
+![](fig/nv.png)
 
 ## Miscellaneous
 
@@ -33,3 +36,4 @@ Compile the file as follows:
 nvcc *.cu --std=c++11
 ```
 
+This project was mainly inspired by this [tuorial](http://www.es.ele.tue.nl/~mwijtvliet/5KK73/?page=mmcuda#TOC-Prefetching). I refine the code to avoid hard coding.
