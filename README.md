@@ -10,7 +10,7 @@ Compute capability:  6.1
 ## Methods
 All the methods are based on the basic multiplication method, whose **time complexity** is O(N<sup>3</sup>). So the optimization focused on low level method, such as reduce the accession in global memory and the number of instructions.
 
-The key idea for CUDA programming is properly assigning work to each threads. Then consider the grid size and block size according to specific matrix size.
+The key idea for CUDA programming is properly assigning work to each threads. Then consider the grid size and block size according to specific matrix size. The main difficulty is to correctly index each value.
 
 We use **GFLOPS** to measure the performance of different methods. In computing, **floating point operations per second(FLOPS)** is a measure of computer performance. It is also commonly used in researches about matrix multiplication on GPU. 
 
@@ -31,6 +31,12 @@ Each thread calculates one value of output matrix ``C``. This is quite simple an
 ### Tiling Method
 Each thread loads one value of ``TxT`` submatrix of ``A`` and ``B`` and calculate one value of submatrix of ``C``. We need to iterate ``K / T`` times to accumulate the value of submatrix of ``C``.
 ![](fig/tl.png)
+
+### CompOpt Method
+CompOpt is **Computational Optimization**. The current architecture of Stream Multiprocessor(SM) only allows one source operand from the shared memory. However, computing the inner product requires two source operands from the shared memory. One solution is to **perform outer product instead of inner product**.
+
+In this method, matrix A is stored in shared memory with TILE size of ``TxT``, but matrix B and C are stored in registers. Each thread needs to load ``TILE_SIZE / VECTOR_SIZE`` values of A and a vector of C with size of ``TILE_SIZE``(As(``TILE_SIZE``x1) x Bv). Here ``VECTOR_SIZE`` is another parameters.
+![](fig/co.png)
 
 ## Miscellaneous
 
