@@ -28,6 +28,10 @@ The perforamce of cuBLAS is as follows:
 Each thread calculates one value of output matrix ``C``. This is quite simple and straight forward. Performance:
 ![](fig/nv.png)
 
+### Tiling Method
+Each thread loads one value of ``TxT`` submatrix of ``A`` and ``B`` and calculate one value of submatrix of ``C``. We need to iterate ``K / T`` times to accumulate the value of submatrix of ``C``.
+![](fig/tl.png)
+
 ## Miscellaneous
 
 Compile the file as follows:
