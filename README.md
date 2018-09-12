@@ -1,47 +1,33 @@
-# README
+# Implementation and Optimization of Matrix Multiplication on CUDA
 
-Some source code about matrix multiplication implementation on CUDA.
+This is a summer intern project in Advanced Computer Architecture Lab, SJTU. I implemented matrix multiplication on CUDA-8.0 based on **five** different method. Some of the methods archieved almost the same performance as cuBLAS.
 
 ## Device Properties
-
-    --- General Information for device 0 ---
 Name:  GeForce GTX 1080 Ti
 
 Compute capability:  6.1
 
-Clock rate:  1.68GHz
+## Methods
+All the methods are based on the basic multiplication method, whose **time complexity** is O(N<sup>3</sup>). So the optimization focused on low level method, such as reduce the accession in global memory and the number of instructions.
 
-Device copy overlap: Enabled
+The key idea for CUDA programming is properly assigning work to each threads. Then consider the grid size and block size according to specific matrix size.
 
-Kernel execution timeout:  Disabled
+We use **GFLOPS** to measure the performance of different methods. In computing, **floating point operations per second(FLOPS)** is a measure of computer performance. It is also commonly used in researches about matrix multiplication on GPU. 
 
-    --- Memory Information for device 0 ---
-Total global mem:   10.91G
+Consider matrix multiplication: A(MxK) x B(KxN) = C(MxN). If the time spent on computing is ``t``, the **GFLOPS** is:
 
-Total constant mem:    64KB
+``2xMxKxN / t / 1e9``
 
-Max mem pitch:    2147483647
+In the experiment, I evaluate GFLOPS with different size of matrix.
 
-Texture Alignment:    512
+### Benchmark(cuBLAS)
+The perforamce of cuBLAS is as follows:
+![](fig/cu.png)
 
-    --- MP Information for device 0 ---
-Multiprocessor count:    28
-
-Shared mem per blcok:    48KB
-
-Registers per blcok:    65536
-
-Threads in warp:    32
-
-Max threads per block:    1024
-
-Max thread dimensions:  (1024, 1024, 64)
-
-Max grid dimensions: (2147483647, 65535, 65535)
 
 ## Miscellaneous
 
-compile the file as follows:
+Compile the file as follows:
 
 ```
 nvcc *.cu --std=c++11
