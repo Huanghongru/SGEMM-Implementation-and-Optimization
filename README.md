@@ -36,7 +36,15 @@ Each thread loads one value of ``TxT`` submatrix of ``A`` and ``B`` and calculat
 CompOpt is **Computational Optimization**. The current architecture of Stream Multiprocessor(SM) only allows one source operand from the shared memory. However, computing the inner product requires two source operands from the shared memory. One solution is to **perform outer product instead of inner product**.
 
 In this method, matrix A is stored in shared memory with TILE size of ``TxT``, but matrix B and C are stored in registers. Each thread needs to load ``TILE_SIZE / VECTOR_SIZE`` values of A and a vector of C with size of ``TILE_SIZE``(As(``TILE_SIZE``x1) x Bv). Here ``VECTOR_SIZE`` is another parameters.
+
+Now we can see that the performance is almost the same as cuBLAS.
 ![](fig/co.png)
+
+### Prefetch Method
+This method is a further optimization of CompOpt method and is based on the concurrency between ``load`` and ``store`` instructions. While we do the outer product, we fetch the next tile of matrix A.
+
+The performance is almost the same as the previous method.
+![](fig/all.png)
 
 ## Miscellaneous
 
@@ -44,6 +52,12 @@ Compile the file as follows:
 
 ```
 nvcc *.cu --std=c++11
+```
+
+If compile the benchmark code with cuBLAS, compile as follows:
+
+```
+nvcc matmul_cublas.cu --std=c++11 -lcublas
 ```
 
 This project was mainly inspired by this [tuorial](http://www.es.ele.tue.nl/~mwijtvliet/5KK73/?page=mmcuda#TOC-Prefetching). I refine the code to avoid hard coding.
